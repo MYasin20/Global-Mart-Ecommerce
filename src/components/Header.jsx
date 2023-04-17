@@ -1,5 +1,7 @@
 import React from 'react'
 import styled from 'styled-components';
+import SearchIcon from '@mui/icons-material/Search';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 function Header() {
   return (
@@ -11,11 +13,13 @@ function Header() {
 
         <SearchField> 
           <input type='text' name='search' />
-          <button>🔍</button>
+          <SearchFieldButton>
+            <SearchIcon />
+          </SearchFieldButton>
         </SearchField>
-        <Cart>
-          <span>🛒</span>
-        </Cart>
+
+        <Cart />
+
       </Nav>
     </NavigationContainer>
   )
@@ -24,13 +28,14 @@ function Header() {
 export default Header;
 
 const NavigationContainer = styled.nav`
-border: 2px solid red;
-  width: min(90%, 78rem);
+  width: 100%;
   height: 70px;
-  margin: 0 auto;
+  background: rgb(155,140,255);
 `
 
 const Nav = styled.div`
+  width: min(90%, 78rem);
+  margin: 0 auto;
   display: flex;
   height: inherit;
   align-items: center;
@@ -39,30 +44,44 @@ const Nav = styled.div`
 
 const NavBrand = styled.nav`
   cursor: pointer;
+  h3 {
+    font-size: 24px;
+    margin-left: 15px;
+    color: white;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+  h3:hover {
+    text-shadow: 0px 4px 3px rgba(0,0,0,0.4),
+    0px 8px 13px rgba(0,0,0,0.1),
+    0px 18px 23px rgba(0,0,0,0.1);
+  }
 `
 
 const SearchField = styled.div`
+  display: flex;
   input {
     width: 480px;
     border: none;
-    background-color: rgba(0, 0, 0, 0.05);
     font-size: 18px;
     padding: 0 10px;
     height: 40px;
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
+    outline: none;
   }
-  button {
-    padding: 0;
-    background-color: rgba(0, 0, 0, 0.05);
-    height: 40px;
-    border: none;
-    cursor: pointer;
-    padding: 0 10px;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-  }
+  
 `
 
-const Cart = styled.div`
+const SearchFieldButton = styled.button`
+  background-color: white;
+  border: none;
+  height: 40px;
+  cursor: pointer;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  padding-top: 5px;
+`
+const Cart = styled(ShoppingCartIcon)`
+  color: white;
 `

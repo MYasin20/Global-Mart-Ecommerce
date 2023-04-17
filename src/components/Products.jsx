@@ -1,26 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 
-function Products() {
-  const [products, setProducts] = useState([]);
+function Products({ getNewProducts }) {
+  const [displayProducts, setDisplayProducts] = useState([]);
+
+  const handleNewProducts = useCallback(() => {
+    return getNewProducts;
+  }, [getNewProducts]);
 
   useEffect(() => {
     async function fetchRandomProducts() {
-      try {
-        const response = await axios('https://dummyjson.com/products');
-        const fetchProducts = response.data.products;
-        setProducts([...fetchProducts]);
-      } catch (error) {
-        console.log(error);
+      if(!getNewProducts) {
+        try {
+          const response = await axios('https://dummyjson.com/products');
+          const fetchProducts = response.data.products;
+          setDisplayProducts([...fetchProducts]);
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        try {
+          const response = await axios(`https://dummyjson.com/products/category/${getNewProducts}?limit=30`);
+          const fetchProducts = response.data.products;
+          setDisplayProducts([...fetchProducts]);
+        } catch (error) {
+          console.log(error);
+        }
       }
     }
     fetchRandomProducts();
-  }, []);
+  }, [handleNewProducts]);
 
   return (
     <ProductsContainer>
-      { products.map((product, i) => (
+      { displayProducts.map((product, i) => (
         <Card key={i}>
           <CardImg src={product.thumbnail} />
           <CardBody>

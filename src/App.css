@@ -11,14 +11,15 @@
 /* html, body {
   height: 100%;
 } */
-/*
+/* 
   Typographic tweaks!
   4. Add accessible line-height
-  5. Improve text rendering
-*/
+  5. Improve text rendering */
+
 body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  background: rgb(245, 245, 245);
 }
 /*
   6. Improve media defaults
