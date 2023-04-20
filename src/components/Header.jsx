@@ -1,9 +1,21 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components';
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
-function Header() {
+function Header({ getNewSearch }) {
+ 
+  const [searchField, setSearchField] = useState('');
+  
+  function handleChange(e) {
+    return setSearchField(e.target.value);
+  }
+
+  function handleNewSearch() {
+    console.log('Header Component: (sending to App Component)', searchField);
+    return getNewSearch(searchField);
+  }
+
   return (
     <NavigationContainer>
       <Nav>
@@ -12,8 +24,8 @@ function Header() {
         </NavBrand>
 
         <SearchField> 
-          <input type='text' name='search' />
-          <SearchFieldButton>
+          <input onChange={handleChange} type='text' name='search' value={searchField} />
+          <SearchFieldButton onClick={handleNewSearch}>
             <SearchIcon />
           </SearchFieldButton>
         </SearchField>

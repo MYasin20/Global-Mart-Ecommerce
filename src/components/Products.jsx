@@ -1,17 +1,14 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 
-function Products({ getNewProducts }) {
+function Products({ getNewCatProductsDisplay, clearCatProductsDisplay, displayNewSearch, clearSearch }) {
   const [displayProducts, setDisplayProducts] = useState([]);
 
-  const handleNewProducts = useCallback(() => {
-    return getNewProducts;
-  }, [getNewProducts]);
-
   useEffect(() => {
-    async function fetchRandomProducts() {
-      if(!getNewProducts) {
+    async function fetchProducts() {
+      if(!getNewCatProductsDisplay) {
+        console.log('Products Component: ','Fetching All Data');
         try {
           const response = await axios('https://dummyjson.com/products');
           const fetchProducts = response.data.products;
@@ -21,7 +18,9 @@ function Products({ getNewProducts }) {
         }
       } else {
         try {
-          const response = await axios(`https://dummyjson.com/products/category/${getNewProducts}?limit=30`);
+          console.log('Products Component : ','Fetching Data New Products', getNewCatProductsDisplay);
+          const response = await 
+            axios(`https://dummyjson.com/products/category/${getNewCatProductsDisplay}?limit=30`);
           const fetchProducts = response.data.products;
           setDisplayProducts([...fetchProducts]);
         } catch (error) {
@@ -29,8 +28,28 @@ function Products({ getNewProducts }) {
         }
       }
     }
-    fetchRandomProducts();
-  }, [handleNewProducts]);
+
+    async function fetchSearchProducts(searchTerm) {
+      console.log('Products Component:','fetchSearch func ->', searchTerm);
+      try {
+        const encodedSearchTerm = encodeURIComponent(searchTerm);
+        const response = await axios(`https://dummyjson.com/products/search?q=${encodedSearchTerm}`);
+        const newSearchProduct = response.data.products;
+        setDisplayProducts([...newSearchProduct]);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    
+    if(displayNewSearch) {
+      fetchSearchProducts(displayNewSearch);
+      clearCatProductsDisplay();
+      clearSearch();
+    } else {
+      fetchProducts();
+      clearSearch();
+    }
+  }, [getNewCatProductsDisplay, displayNewSearch]);
 
   return (
     <ProductsContainer>
@@ -79,7 +98,7 @@ const Card = styled.div`
   flex-direction: column;
   justify-content: space-between;
   background: rgba(0, 0, 0, 0.025);
-
+  /* add height? */
   :hover {
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     transform: translateY(-1px);
