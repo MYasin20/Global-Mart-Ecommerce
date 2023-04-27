@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios';
 import styled from 'styled-components'
 
-function Categories({ displayNewCatToProduct }) {
+function CategoryLists({ displayNewCatToProduct }) {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ function Categories({ displayNewCatToProduct }) {
   }
 
   function displayNewCategory(e) {
-    return displayNewCatToProduct(e.target.textContent);
+    return displayNewCatToProduct(e.target.textContent, false);
   }
 
   return (
@@ -41,7 +41,7 @@ function Categories({ displayNewCatToProduct }) {
   )
 }
 
-export default Categories;
+export default CategoryLists;
 
 const CategoriesContainer = styled.div`
   flex: 1 1 20%;

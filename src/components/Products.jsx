@@ -2,54 +2,55 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 
-function Products({ getNewCatProductsDisplay, clearCatProductsDisplay, displayNewSearch, clearSearch }) {
+function Products({ displayEntry, handleCondition }) {
   const [displayProducts, setDisplayProducts] = useState([]);
 
   useEffect(() => {
-    async function fetchProducts() {
-      if(!getNewCatProductsDisplay) {
-        console.log('Products Component: ','Fetching All Data');
-        try {
-          const response = await axios('https://dummyjson.com/products');
-          const fetchProducts = response.data.products;
-          setDisplayProducts([...fetchProducts]);
-        } catch (error) {
-          console.log(error);
-        }
-      } else {
-        try {
-          console.log('Products Component : ','Fetching Data New Products', getNewCatProductsDisplay);
-          const response = await 
-            axios(`https://dummyjson.com/products/category/${getNewCatProductsDisplay}?limit=30`);
-          const fetchProducts = response.data.products;
-          setDisplayProducts([...fetchProducts]);
-        } catch (error) {
-          console.log(error);
-        }
+    let active = true;
+    async function fetchAllProducts() {
+      console.log('Products Component: ','Fetching All Data');
+      const response = await axios('https://dummyjson.com/products');
+      const fetchProducts = response.data.products;
+      if(active) return setDisplayProducts([...fetchProducts]);
+    }
+    fetchAllProducts()
+    return () => {
+      active = false;
+    }
+  }, [])
+  
+  useEffect(() => {
+    let active = true;
+    async function fetchNewProducts(newProducts) {
+      console.log('Products Component : ','Fetching Data New Products', newProducts);
+      const response = await 
+        axios(`https://dummyjson.com/products/category/${newProducts}?limit=30`);
+      const fetchProducts = response.data.products;
+      if(active) {
+        return setDisplayProducts([...fetchProducts]);
       }
     }
 
     async function fetchSearchProducts(searchTerm) {
       console.log('Products Component:','fetchSearch func ->', searchTerm);
-      try {
         const encodedSearchTerm = encodeURIComponent(searchTerm);
         const response = await axios(`https://dummyjson.com/products/search?q=${encodedSearchTerm}`);
         const newSearchProduct = response.data.products;
-        setDisplayProducts([...newSearchProduct]);
-      } catch (error) {
-        console.log(error);
+        if(active) {
+          return setDisplayProducts([...newSearchProduct]);
+        }
+    }
+      if(handleCondition) {
+        fetchSearchProducts(displayEntry);
+      } else if(displayEntry && !handleCondition) {
+        fetchNewProducts(displayEntry);
       }
+
+    return () => {
+      active = false;
     }
-    
-    if(displayNewSearch) {
-      fetchSearchProducts(displayNewSearch);
-      clearCatProductsDisplay();
-      clearSearch();
-    } else {
-      fetchProducts();
-      clearSearch();
-    }
-  }, [getNewCatProductsDisplay, displayNewSearch]);
+
+  }, [displayEntry, handleCondition]);
 
   return (
     <ProductsContainer>
